@@ -4,6 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { css, StyleSheet } from 'aphrodite';
 import Input from '../Input';
+import Errors from '../Errors';
 
 const styles = StyleSheet.create({
   card: {
@@ -17,6 +18,7 @@ type Props = {
   onSubmit: () => void,
   submitting: boolean,
   handleSubmit: () => void,
+  errors: any,
 }
 
 class SignupForm extends Component {
@@ -25,7 +27,7 @@ class SignupForm extends Component {
   handleSubmit = data => this.props.onSubmit(data);
 
   render() {
-    const { handleSubmit, submitting } = this.props;
+    const { errors, handleSubmit, submitting } = this.props;
 
     return (
       <form
@@ -40,6 +42,7 @@ class SignupForm extends Component {
           placeholder="Username"
           className="form-control"
         />
+        <Errors name="username" errors={errors} />
         <Field
           name="email"
           type="email"
@@ -47,6 +50,7 @@ class SignupForm extends Component {
           placeholder="Email"
           className="form-control"
         />
+        <Errors name="email" errors={errors} />
         <Field
           name="password"
           type="password"
@@ -54,6 +58,7 @@ class SignupForm extends Component {
           placeholder="Password"
           className="form-control"
         />
+        <Errors name="password" errors={errors} />
         <button
           type="submit"
           disabled={submitting}

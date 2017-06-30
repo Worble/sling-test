@@ -29,6 +29,9 @@ export function login(data, router) {
       setCurrentUser(dispatch, response);
       dispatch(reset('login'));
       router.transitionTo('/');
+    })
+    .catch(() => {
+      dispatch({ type: 'SHOW_ALERT', message: 'Invalid email or password' });
     });
 }
 
@@ -38,6 +41,9 @@ export function signup(data, router) {
       setCurrentUser(dispatch, response);
       dispatch(reset('signup'));
       router.transitionTo('/');
+    })
+    .catch((error) => {
+      dispatch({ type: 'SIGNUP_FAILURE', error });
     });
 }
 
@@ -47,7 +53,7 @@ export function logout(router) {
       localStorage.removeItem('token');
       dispatch({ type: 'LOGOUT' });
       router.transitionTo('/login');
-    });
+    })
 }
 
 export function authenticate() {

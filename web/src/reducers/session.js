@@ -29,11 +29,17 @@ export default function (state = initialState, action) {
         willAuthenticate: false,
         isAuthenticated: false,
         currentUser: {},
+        socket: null,
       };
-      case 'SOCKET_CONNECTED':
+      case 'SOCKET_CONNECTED':  
       return {
         ...state,
         socket: action.socket,
+      };
+      case 'SIGNUP_FAILURE':
+      return {
+        ...state,
+        signupErrors: action.error.errors,
       };
     default:
       return state;

@@ -28,7 +28,7 @@ export function login(data, router) {
     .then((response) => {
       setCurrentUser(dispatch, response);
       dispatch(reset('login'));
-      router.transitionTo('/');
+      router.history.push('/');
     })
     .catch(() => {
       dispatch({ type: 'SHOW_ALERT', message: 'Invalid email or password' });
@@ -40,7 +40,7 @@ export function signup(data, router) {
     .then((response) => {
       setCurrentUser(dispatch, response);
       dispatch(reset('signup'));
-      router.transitionTo('/');
+      router.history.push('/');
     })
     .catch((error) => {
       dispatch({ type: 'SIGNUP_FAILURE', error });
@@ -52,7 +52,7 @@ export function logout(router) {
     .then(() => {
       localStorage.removeItem('token');
       dispatch({ type: 'LOGOUT' });
-      router.transitionTo('/login');
+      router.history.push('/login');
     })
 }
 

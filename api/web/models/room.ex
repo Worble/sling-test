@@ -17,6 +17,7 @@ defmodule Sling.Room do
     struct
     |> cast(params, [:name, :topic])
     |> validate_required([:name])
+    |> validate_length(:name, min: 1, max: 20)
     |> unique_constraint(:name)
   end
 end

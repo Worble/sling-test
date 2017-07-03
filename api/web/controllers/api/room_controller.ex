@@ -1,4 +1,3 @@
-
 defmodule Sling.RoomController do
   use Sling.Web, :controller
 
@@ -47,6 +46,24 @@ defmodule Sling.RoomController do
         conn
         |> put_status(:created)
         |> render("show.json", %{room: room})
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Sling.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  def leave(conn, %{"id" => room_id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    room = Repo.get(Room, room_id)
+
+    user_room = Repo.get_by(Sling.UserRoom, room_id: room.id, user_id: current_user.id)
+
+    case Repo.delete(user_room) do
+      {:ok, struct} ->
+        conn
+        |> put_status(:ok)
+        |> render("delete.json", user_room: struct)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

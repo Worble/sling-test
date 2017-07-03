@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     background: 'rgb(38,28,37)',
+    flexGrow: '1',
   },
 
   link: {

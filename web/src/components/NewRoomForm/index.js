@@ -1,11 +1,21 @@
 // @flow
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
+import Errors from '../Errors';
+import Input from '../Input';
+import { css, StyleSheet } from 'aphrodite';
+
+const styles = StyleSheet.create({
+  createRoomButton: {
+    verticalAlign: 'top',
+  },
+});
 
 type Props = {
   handleSubmit: () => void,
   onSubmit: () => void,
   submitting: boolean,
+  errors: any,
 }
 
 class NewRoomForm extends Component {
@@ -14,7 +24,7 @@ class NewRoomForm extends Component {
   handleSubmit = data => this.props.onSubmit(data);
 
   render() {
-    const { handleSubmit, submitting } = this.props;
+    const { errors, handleSubmit, submitting } = this.props;
 
     return (
       <form onSubmit={handleSubmit(this.handleSubmit)}>
@@ -23,10 +33,11 @@ class NewRoomForm extends Component {
             name="name"
             type="text"
             placeholder="Name"
-            component="input"
+            component={Input}
             className="form-control"
           />
-          <div className="input-group-btn">
+          <Errors name="name" errors={errors} />
+          <div className={`input-group-btn ${css(styles.createRoomButton)}`}>
             <button type="submit" className="btn btn-primary" disabled={submitting}>
               {submitting ? 'Saving...' : 'Submit'}
             </button>

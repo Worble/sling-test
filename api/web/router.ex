@@ -33,5 +33,6 @@ defmodule Sling.Router do
       resources "/messages", MessageController, only: [:index]
     end
     post "/rooms/:id/join", RoomController, :join
+    post "/rooms/:id/leave", RoomController, :leave
   end
 end

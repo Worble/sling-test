@@ -14,4 +14,11 @@ defmodule Sling.RoomView do
       name: room.name,
       topic: room.topic}
   end
+
+  def render("delete.json", %{user_room: user_room}) do
+    %{ok: true,
+      id: user_room.id,
+      room_id: user_room.room_id,
+      user_id: user_room.user_id}
+  end
 end

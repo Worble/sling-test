@@ -1,8 +1,8 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { css, StyleSheet } from 'aphrodite';
-import { fetchRooms, createRoom, joinRoom } from '../../actions/rooms';
+import { fetchRooms, createRoom, joinRoom, leaveRoom } from '../../actions/rooms';
 import NewRoomForm from '../../components/NewRoomForm';
 import Navbar from '../../components/Navbar';
 import RoomListItem from '../../components/RoomListItem';
@@ -26,13 +26,11 @@ type Props = {
   fetchRooms: () => void,
   createRoom: () => void,
   joinRoom: () => void,
+  leaveRoom: () => void,
+  errors: Array<string>,
 }
 
 class Home extends Component {
-  static contextTypes = {
-    router: PropTypes.object,
-  }
-
   componentDidMount() {
     this.props.fetchRooms();
   }
@@ -43,6 +41,8 @@ class Home extends Component {
 
   handleRoomJoin = roomId => this.props.joinRoom(roomId, this.context.router);
 
+  handleRoomLeave = roomId => this.props.leaveRoom(roomId, this.context.router);
+
   renderRooms() {
     const currentUserRoomIds = [];
     this.props.currentUserRooms.map(room => currentUserRoomIds.push(room.id));
@@ -51,6 +51,7 @@ class Home extends Component {
         key={room.id}
         room={room}
         onRoomJoin={this.handleRoomJoin}
+        onRoomLeave={this.handleRoomLeave}
         currentUserRoomIds={currentUserRoomIds}
       />
     );
@@ -62,7 +63,7 @@ class Home extends Component {
         <Navbar />
         <div className={`card ${css(styles.card)}`}>
           <h3 style={{ marginBottom: '2rem', textAlign: 'center' }}>Create a new room</h3>
-          <NewRoomForm onSubmit={this.handleNewRoomSubmit} />
+          <NewRoomForm onSubmit={this.handleNewRoomSubmit} errors={this.props.errors}/>
         </div>
         <div className={`card ${css(styles.card)}`}>
           <h3 style={{ marginBottom: '2rem', textAlign: 'center' }}>Join a room</h3>
@@ -73,10 +74,17 @@ class Home extends Component {
   }
 }
 
+Home.contextTypes = {
+  router: React.PropTypes.shape({
+    history: React.PropTypes.object.isRequired,
+  }),
+};
+
 export default connect(
-  state => ({
+  (state) => ({
     rooms: state.rooms.all,
+    errors: state.rooms.createRoomErrors,
     currentUserRooms: state.rooms.currentUserRooms,
   }),
-  { fetchRooms, createRoom, joinRoom }
+  { fetchRooms, createRoom, joinRoom, leaveRoom }
 )(Home);

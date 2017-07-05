@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
   roomSidebar: {
     color: '#ab9ba9',
     background: '#4d394b',
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: '1',
   },
 
   header: {
@@ -49,6 +52,13 @@ const styles = StyleSheet.create({
     fontSize: '13px',
     textTransform: 'uppercase',
   },
+
+  leaveRoomButton:{
+    margin: '10px',
+    borderColor: '#819090',
+    backgroundColor: '#261c25',
+    color: '#b9b6b9',
+  }
 });
 
 type User = {
@@ -66,7 +76,6 @@ type Props = {
   },
   presentUsers: Array<User>,
   handleRoomLeave: () => void,
-  router: Object,
 }
 
 const RoomSidebar = ({ room, currentUser, presentUsers, handleRoomLeave, router }: Props) =>
@@ -84,7 +93,7 @@ const RoomSidebar = ({ room, currentUser, presentUsers, handleRoomLeave, router 
     <div style={{ flex: '1' }} />
     <button
       onClick={() => handleRoomLeave(room.id)}
-      className={css(styles.link, styles.logoutButton)}
+      className={css(styles.leaveRoomButton)}
     >
       <div>
         <span>Leave Room</span>

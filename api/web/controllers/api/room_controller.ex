@@ -5,9 +5,13 @@ defmodule Sling.RoomController do
 
   plug Guardian.Plug.EnsureAuthenticated, handler: Sling.SessionController
 
-  def index(conn, _params) do
-    rooms = Repo.all(Room)
-    render(conn, "index.json", rooms: rooms)
+  def index(conn, params) do
+    page =
+      Sling.Room
+        |> order_by([desc: :inserted_at, desc: :id])
+        |> Sling.Repo.paginate(params)
+
+    render(conn, "index.json", page: page)
   end
 
   def create(conn, params) do
@@ -61,13 +65,20 @@ defmodule Sling.RoomController do
 
     case Repo.delete(user_room) do
       {:ok, struct} ->
-        conn
-        |> put_status(:ok)
-        |> render("delete.json", user_room: struct)
+        if Repo.one(from r in Sling.UserRoom, where: r.room_id == ^room.id, select: count("*")) < 1 do
+          Repo.delete(room)
+          conn
+          |> put_status(:ok)
+          |> render("room_deleted.json", user_room: struct)
+        else
+          conn
+          |> put_status(:ok)
+          |> render("delete.json", user_room: struct)
+        end
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(Sling.ChangesetView, "error.json", changeset: changeset)
-    end
+    end    
   end
 end

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { connectToChannel, leaveChannel, createMessage, loadOlderMessages } from '../../actions/room';
+import { leaveRoom } from '../../actions/rooms';
 import MessageList from '../../components/MessageList';
 import MessageForm from '../../components/MessageForm';
 import RoomNavbar from '../../components/RoomNavbar';
@@ -34,6 +35,7 @@ type Props = {
     page_number: number,
   },
   loadOlderMessages: () => void,
+  leaveRoom: () => void,
 }
 
 class Room extends Component {
@@ -67,6 +69,8 @@ class Room extends Component {
     this.props.createMessage(this.props.channel, data);
   }
 
+  handleRoomLeave = roomId => this.props.leaveRoom(roomId, this.context.router);
+
   render() {
 
     const moreMessages = this.props.pagination.total_pages > this.props.pagination.page_number;
@@ -77,6 +81,7 @@ class Room extends Component {
           room={this.props.room}
           currentUser={this.props.currentUser}
           presentUsers={this.props.presentUsers}
+          handleRoomLeave={this.handleRoomLeave}
         />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <RoomNavbar room={this.props.room} />
@@ -93,8 +98,14 @@ class Room extends Component {
   }
 }
 
+Room.contextTypes = {
+  router: React.PropTypes.shape({
+    history: React.PropTypes.object.isRequired,
+  }),
+};
+
 export default connect(
-  state => ({
+  (state) => ({
     room: state.room.currentRoom,
     socket: state.session.socket,
     channel: state.room.channel,
@@ -104,5 +115,5 @@ export default connect(
     pagination: state.room.pagination,
     loadingOlderMessages: state.room.loadingOlderMessages,
   }),
-  { connectToChannel, leaveChannel, createMessage, loadOlderMessages }
+  { connectToChannel, leaveChannel, createMessage, loadOlderMessages, leaveRoom }
 )(Room);

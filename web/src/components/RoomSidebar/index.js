@@ -59,18 +59,21 @@ type User = {
 type Props = {
   room: {
     name: string,
+    subject: string,
   },
   currentUser: {
     username: string,
   },
   presentUsers: Array<User>,
+  handleRoomLeave: () => void,
+  router: Object,
 }
 
-const RoomSidebar = ({ room, currentUser, presentUsers }: Props) =>
+const RoomSidebar = ({ room, currentUser, presentUsers, handleRoomLeave, router }: Props) =>
   <div className={css(styles.roomSidebar)}>
     <div className={css(styles.header)}>
       <h2 className={css(styles.roomName)}>{room.name}</h2>
-      <div style={{ fontSize: '13px' }}>{currentUser.username}</div>
+      <div style={{ fontSize: '13px' }}>change this to room owner eventually</div>
     </div>
     <div className={css(styles.listHeading)}>Active Users</div>
     <ul className={css(styles.userList)}>
@@ -78,6 +81,21 @@ const RoomSidebar = ({ room, currentUser, presentUsers }: Props) =>
         <li key={user.id} className={css(styles.username)}>{user.username}</li>
       )}
     </ul>
+    <div style={{ flex: '1' }} />
+    <button
+      onClick={() => handleRoomLeave(room.id)}
+      className={css(styles.link, styles.logoutButton)}
+    >
+      <div>
+        <span>Leave Room</span>
+      </div>
+    </button>
   </div>;
+
+RoomSidebar.contextTypes = {
+  router: React.PropTypes.shape({
+    history: React.PropTypes.object.isRequired,
+  }),
+};
 
 export default RoomSidebar;

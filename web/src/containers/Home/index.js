@@ -6,6 +6,7 @@ import { fetchRooms, createRoom, joinRoom, leaveRoom } from '../../actions/rooms
 import NewRoomForm from '../../components/NewRoomForm';
 import Navbar from '../../components/Navbar';
 import RoomListItem from '../../components/RoomListItem';
+import Pager from '../../components/Pager';
 
 const styles = StyleSheet.create({
   card: {
@@ -28,20 +29,65 @@ type Props = {
   joinRoom: () => void,
   leaveRoom: () => void,
   errors: Array<string>,
+  pagination: {
+    total_pages: number,
+    total_entries: number,
+    page_size: number,
+    page_number: number,
+  },
+}
+
+type State = {
+  page: number,
+  page_size: number,
 }
 
 class Home extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      page: 1,
+      page_size: 5
+    }
+  }
+
+  state: State
+
   componentDidMount() {
-    this.props.fetchRooms();
+    this.loadRooms();
   }
 
   props: Props
+
+  loadRooms() {
+    const { page, page_size } = this.state;
+    this.props.fetchRooms({ page, page_size });
+  }
+
+  handlePagerClick = (direction) => {
+    if (direction === 'next') {
+      this.setState({
+        page: this.state.page + 1,
+      }, () => { this.loadRooms(); });
+    } else if (direction === 'prev') {
+      this.setState({
+        page: this.state.page - 1,
+      }, () => { this.loadRooms(); });
+    }
+  }
 
   handleNewRoomSubmit = data => this.props.createRoom(data, this.context.router);
 
   handleRoomJoin = roomId => this.props.joinRoom(roomId, this.context.router);
 
-  handleRoomLeave = roomId => this.props.leaveRoom(roomId, this.context.router);
+  handleRoomLeave = roomId => {
+    let promise = new Promise((resolve, reject) => {
+      resolve(this.props.leaveRoom(roomId, this.context.router));
+    });
+    promise.then(() => {
+      this.loadRooms();
+    });
+  }
 
   renderRooms() {
     const currentUserRoomIds = [];
@@ -59,7 +105,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div style={{ flex: '1' }}>
+      <div style={{ flex: '1', overflowY: 'auto' }}>
         <Navbar />
         <div className={`card ${css(styles.card)}`}>
           <h3 style={{ marginBottom: '2rem', textAlign: 'center' }}>Create a new room</h3>
@@ -67,7 +113,12 @@ class Home extends Component {
         </div>
         <div className={`card ${css(styles.card)}`}>
           <h3 style={{ marginBottom: '2rem', textAlign: 'center' }}>Join a room</h3>
-          {this.renderRooms()}
+          <div style={{ marginBottom: '1rem' }}>
+            {this.renderRooms()}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Pager pagination={this.props.pagination} onPagerClick={this.handlePagerClick} />
+          </div>
         </div>
       </div>
     );
@@ -85,6 +136,7 @@ export default connect(
     rooms: state.rooms.all,
     errors: state.rooms.createRoomErrors,
     currentUserRooms: state.rooms.currentUserRooms,
+    pagination: state.rooms.pagination,
   }),
   { fetchRooms, createRoom, joinRoom, leaveRoom }
 )(Home);

@@ -1,7 +1,7 @@
 import api from '../api';
 
-export function fetchRooms() {
-  return dispatch => api.fetch('/rooms')
+export function fetchRooms(params) {
+  return dispatch => api.fetch('/rooms', params)
     .then((response) => {
       dispatch({ type: 'FETCH_ROOMS_SUCCESS', response });
     });
@@ -36,7 +36,7 @@ export function joinRoom(roomId, router) {
 export function leaveRoom(roomId, router) {
   return dispatch => api.post(`/rooms/${roomId}/leave`)
     .then((response) => {
-      dispatch({ type: 'ROOM_LEFT', response });
+      dispatch({ type: 'ROOM_LEFT', response }); 
       router.history.push(`/`);
     });
 }

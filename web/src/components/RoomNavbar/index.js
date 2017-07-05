@@ -18,7 +18,11 @@ type Props = {
 
 const RoomNavbar = ({ room }: Props) =>
   <nav className={css(styles.navbar)}>
-    <div>#{room.name}</div>
+    <div>#{room.name}
+      {room.topic &&
+      <span>: {room.topic}</span>
+      }
+      </div>
   </nav>;
 
 export default RoomNavbar;

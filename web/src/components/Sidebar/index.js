@@ -77,11 +77,10 @@ const RoomLink = ({ room }: RoomLinkProps) =>
 
 type Props = {
   rooms: Array<Room>,
-  router: Object,
   onLogoutClick: () => void,
 }
 
-const Sidebar = ({ rooms, router, onLogoutClick }: Props) =>
+const Sidebar = ({ rooms, onLogoutClick }: Props) =>
   <div className={css(styles.sidebar)}>
     {rooms.map(room => <RoomLink key={room.id} room={room} />)}
     <NavLink
@@ -95,7 +94,7 @@ const Sidebar = ({ rooms, router, onLogoutClick }: Props) =>
     </NavLink>
     <div style={{ flex: '1' }} />
     <button
-      onClick={() => onLogoutClick(router)}
+      onClick={() => onLogoutClick()}
       className={css(styles.link, styles.logoutButton)}
     >
       <div className={css(styles.badge)}>
@@ -103,11 +102,5 @@ const Sidebar = ({ rooms, router, onLogoutClick }: Props) =>
       </div>
     </button>
   </div>;
-
-Sidebar.contextTypes = {
-  router: React.PropTypes.shape({
-    history: React.PropTypes.object.isRequired,
-  }),
-};
 
 export default Sidebar;

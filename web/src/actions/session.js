@@ -47,12 +47,12 @@ export function signup(data, router) {
     });
 }
 
-export function logout(router) {
+export function logout() {
   return dispatch => api.delete('/sessions')
     .then(() => {
       localStorage.removeItem('token');
       dispatch({ type: 'LOGOUT' });
-      router.history.push('/login');
+      window.location = '/login';
     })
 }
 

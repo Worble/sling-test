@@ -2,6 +2,12 @@ const initialState = {
   all: [],
   currentUserRooms: [],
   createRoomErrors: [],
+  pagination: {
+    total_pages: 0,
+    total_entries: 0,
+    page_size: 0,
+    page_number: 0,
+  },
 };
 
 export default function (state = initialState, action) {
@@ -10,6 +16,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         all: action.response.data,
+        pagination: action.response.pagination,
       };
     case 'FETCH_USER_ROOMS_SUCCESS':
       return {
@@ -42,10 +49,10 @@ export default function (state = initialState, action) {
         ],
       };
     case 'ROOM_LEFT':
-      var index = state.currentUserRooms.findIndex(i => i.id === action.response.room_id);
+      var currentUserRoomsIndex = state.currentUserRooms.findIndex(i => i.id === action.response.room_id);
       return {
         ...state, 
-        ...state.currentUserRooms.splice(index, 1)
+        ...state.currentUserRooms.splice(currentUserRoomsIndex, 1),
       };
     default:
       return state;

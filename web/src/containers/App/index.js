@@ -61,7 +61,7 @@ class App extends Component {
     }
   }
 
-  handleLogout = router => this.props.logout(router);
+  handleLogout = () => this.props.logout();
 
   props: Props
 

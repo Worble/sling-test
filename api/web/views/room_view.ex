@@ -1,8 +1,11 @@
 defmodule Sling.RoomView do
   use Sling.Web, :view
 
-  def render("index.json", %{rooms: rooms}) do
-    %{data: render_many(rooms, Sling.RoomView, "room.json")}
+  def render("index.json", %{page: page}) do
+    %{
+      data: render_many(page.entries, Sling.RoomView, "room.json"),
+      pagination: Sling.PaginationHelpers.pagination(page)
+    }
   end
 
   def render("show.json", %{room: room}) do
@@ -17,6 +20,14 @@ defmodule Sling.RoomView do
 
   def render("delete.json", %{user_room: user_room}) do
     %{ok: true,
+      id: user_room.id,
+      room_id: user_room.room_id,
+      user_id: user_room.user_id}
+  end
+
+  def render("room_deleted.json", %{user_room: user_room}) do
+    %{ok: true,
+      deleted: true,
       id: user_room.id,
       room_id: user_room.room_id,
       user_id: user_room.user_id}

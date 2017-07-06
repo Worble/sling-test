@@ -101,10 +101,4 @@ const RoomSidebar = ({ room, currentUser, presentUsers, handleRoomLeave, router 
     </button>
   </div>;
 
-RoomSidebar.contextTypes = {
-  router: React.PropTypes.shape({
-    history: React.PropTypes.object.isRequired,
-  }),
-};
-
 export default RoomSidebar;

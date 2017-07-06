@@ -96,12 +96,6 @@ class App extends Component {
   }
 }
 
-App.contextTypes = {
-  router: React.PropTypes.shape({
-    history: React.PropTypes.object.isRequired,
-  }),
-};
-
 export default connect(
   state => ({
     isAuthenticated: state.session.isAuthenticated,
